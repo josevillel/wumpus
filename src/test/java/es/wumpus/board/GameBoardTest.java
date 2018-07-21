@@ -5,15 +5,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 
-import es.wumpus.board.Cell;
-import es.wumpus.board.GameBoard;
-import es.wumpus.board.GameBoardException;
-
 public class GameBoardTest {
 	
+	public enum ElementsTest implements BoardElement {
+		TEST
+	}
 	
 	
 	@Test(expected = GameBoardException.class)
@@ -21,6 +21,22 @@ public class GameBoardTest {
 		
 		new GameBoard(0, 2);
 	}
+	
+	@Test(expected = GameBoardException.class)
+	public void gameBoardThrowExceptionWhenSearchRandomCellExceedLimit() throws GameBoardException {
+		
+		GameBoard gameBoard = new GameBoard(3, 3);
+		
+		for (int x = 0; x < gameBoard.getDimensionX(); x++) {
+			  for (int y = 0; y <  gameBoard.getDimensionY(); y++) {
+				 Cell cell = gameBoard.getCellByPosition(x, y);
+				 cell.setContent(Optional.of(ElementsTest.TEST));
+			  }
+		}
+		
+		gameBoard.putElementOnRandomCell(ElementsTest.TEST);
+	}
+	
 	
 	@Test
 	public void gameBoardWithDimensionNMHasNxMCells() throws GameBoardException {
@@ -73,6 +89,7 @@ public class GameBoardTest {
 				assertTrue("GameBoard returns cells not connected", connectedCells.stream().allMatch(cell -> cell.getPositionX() >=x-1 && cell.getPositionX() <=x+1 && cell.getPositionY() >=y-1 && cell.getPositionY() <=y+1));
 			}
 		}
+	
 	}
 
 }

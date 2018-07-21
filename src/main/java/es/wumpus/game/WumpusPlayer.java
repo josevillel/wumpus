@@ -117,6 +117,7 @@ public class WumpusPlayer {
 	
 	/**
 	 * Initialize the player
+	 * @throws GameBoardException 
 	 */
 	public void init() {
 		
@@ -132,17 +133,24 @@ public class WumpusPlayer {
 	
 	/**
 	 * Put game elements on the board.
+	 * @throws GameBoardException 
 	 */
 	public void putElementsOnBoard() {
 		
 		getGameBoard().clear();
 		
-		for(WumpusElements element : WumpusElements.values()) {
-			for (int i = 1; i <= element.getTimes(); i++) {
-				getGameBoard().putElementOnRandomCell(element);
+		try {
+			getGameBoard().putElementOnRandomCell(WumpusElements.WUMPUS);
+			getGameBoard().putElementOnRandomCell(WumpusElements.GOLD);
+			for (int i = 1; i <= rules.getNumberOfPits(); i++) {
+				getGameBoard().putElementOnRandomCell(WumpusElements.PIT);
 			}
+		} catch (GameBoardException e) {
+			// TODO Handle exceptions
+			e.printStackTrace();
 		}
-		
+
+
 	}
 
 	/**

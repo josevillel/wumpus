@@ -20,6 +20,8 @@ public class GameBoard {
 	
 	private static final int DEFAULT_DIMENSION_X = 4; 
 	private static final int DEFAULT_DIMENSION_Y = 4; 
+	
+	private static final int RANDOM_CELL_SEARCH_MAX_ATTEMPS = 200;
 
 	private int dimensionX;
 	private int dimensionY;	
@@ -105,12 +107,14 @@ public class GameBoard {
 	/**
 	 * Look for a random cell that is empty, and puts a {@link BoardElement}  inside.
 	 * @param element {@link BoardElement}  to insert.
+	 * @throws GameBoardException 
 	 */
-	public void putElementOnRandomCell(BoardElement element) {
+	public void putElementOnRandomCell(BoardElement element) throws GameBoardException {
 		
 		Random r = new Random();
 		int x;
 		int y;
+		int cont = 0;
 		Cell cell;
 		
 			
@@ -119,9 +123,13 @@ public class GameBoard {
 			y = r.nextInt(this.getDimensionY());
 			
 			cell = this.getCellByPosition(x,y);
-			
-		} while (cell.getContent().isPresent() || (x == getInitialPositionX() && y==getInitialPositionY()));
+			cont++;
+
+		} while (cont < RANDOM_CELL_SEARCH_MAX_ATTEMPS && (cell.getContent().isPresent() || (x == getInitialPositionX() && y==getInitialPositionY())));
 		
+		if(cont==RANDOM_CELL_SEARCH_MAX_ATTEMPS) {
+			throw new GameBoardException(GameBoardException.RANDOM_CELL_SEARCH_EXCEED_LIMIT_MSG);
+		}
 		putElementOnCell(element, x, y);
 			
 	}

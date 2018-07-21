@@ -12,17 +12,14 @@ public class WumpusRules {
 	public static final Courses DEFAULT_INITIAL_COURSE = Courses.EAST;
 	
 	public enum WumpusElements implements BoardElement {
-		GOLD (1,'$'),
-		PIT (DEFAULT_NUMBER_OF_PITS, 'O'),
-		WUMPUS (1, '@');
+		GOLD ('$'),
+		PIT ('O'),
+		WUMPUS ('@');
 		
-		private int times;
 		private char representativeChar; 
-		private WumpusElements(int times, char representativeChar) {
-			this.times=times;
+		private WumpusElements(char representativeChar) {
 			this.representativeChar=representativeChar;
 		}
-		public int getTimes() { return this.times; }
 		public char getRepresentativeChar() { return this.representativeChar; }
 	}
 
