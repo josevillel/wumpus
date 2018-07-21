@@ -135,7 +135,7 @@ public class WumpusPlayerTest {
 		player.setCurrentCourse(Courses.NORTH);
 		player.doAction(Actions.GO_FORWARD);
 		
-		assertTrue("Player found WUMPUS and does not lose", Results.LOSE.equals(player.checkTheGoal()));
+		assertTrue("Player found WUMPUS and does not lose", Results.LOSE_WUMPUS.equals(player.checkTheGoal()));
 		
 	}
 	

@@ -64,7 +64,18 @@ public class WumpusRules {
 	}
 	
 	public enum Results {
-		WIN, LOSE, GO_ON
+		WIN("YOU WIN!!"),
+		LOSE("You have fallen into a PIT. YOU LOSE!! "),
+		LOSE_WUMPUS("You have found the WUMPUS... YOU LOSE!!"),
+		GO_ON("You can continue...");
+		
+		private String resultText;
+		
+		private Results(String resultText) {
+			this.resultText=resultText;
+		}
+		
+		public String getResultText() {return this.resultText;}
 	}
 	
 	public WumpusRules() {

@@ -64,16 +64,7 @@ public class WumpusTextBasedInterface {
 				
 			} while (Results.GO_ON.equals(result));
 			
-			switch (result) {
-				case LOSE:
-					System.out.println("YOU LOSE");
-					break;
-				case WIN:
-					System.out.println("YOU WIN");
-					break;
-				default:
-					break;
-			}
+			System.out.println(result.getResultText());
 			
 			wumpusPlayer.init();
 
@@ -125,7 +116,7 @@ public class WumpusTextBasedInterface {
 		
 		System.out.println(SEPARATOR_PAD);
 		if(perceptions == null || perceptions.isEmpty()) {
-			System.out.println("You do not perceive anything interesting");
+			System.out.println("You do not perceive anything interesting...");
 		} else {
 			
 			perceptions.stream().forEach( perception->System.out.println(perception.getPerceptionText()));

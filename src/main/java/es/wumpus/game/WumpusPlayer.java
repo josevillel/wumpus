@@ -163,10 +163,9 @@ public class WumpusPlayer {
 		
 		List<WumpusRules.Perceptions> perceptions = new ArrayList<>();
 		Cell currentCell = gameBoard.getCellByPosition(getPositionX(), getPositionY());
-		List<Cell> connectedCells = gameBoard.getConnectedCells(currentCell);
 		
-		connectedCells.stream().forEach(cell -> addPerceptionFromConnectedCell(perceptions, cell));
-		addPerceptionFromCurrentCell(perceptions, currentCell);
+		addPerceptionsFromConnectedCells(perceptions, currentCell);
+		addPerceptionsFromCurrentCell(perceptions, currentCell);
 		
 		return perceptions;
 	}
@@ -176,24 +175,33 @@ public class WumpusPlayer {
 	 * @param perceptions {@link Perceptions}
 	 * @param cell {@link Cell}
 	 */
-	private void addPerceptionFromConnectedCell(List<Perceptions> perceptions, Cell cell) {
+	private void addPerceptionsFromConnectedCells(List<Perceptions> perceptions, Cell currentCell) {
 		
-		if(cell.getContent().isPresent()) {
+		List<Cell> connectedCells = gameBoard.getConnectedCells(currentCell);
+		
+		for(Cell cell : connectedCells) {
 			
-			switch ((WumpusElements) cell.getContent().get()) {
-			
-				case PIT:
-					perceptions.add(Perceptions.BREEZE);
-					break;
-					
-				case WUMPUS:
-					perceptions.add(Perceptions.STENCH);
-					break;
-					
-				default:
-					break;
+			if(cell.getContent().isPresent()) {
+				
+				switch ((WumpusElements) cell.getContent().get()) {
+				
+					case PIT:
+						perceptions.add(Perceptions.BREEZE);
+						break;
+						
+					case WUMPUS:
+						perceptions.add(Perceptions.STENCH);
+						break;
+						
+					default:
+						break;
+				}
 			}
+			
 		}
+		
+		
+		
 	}
 	
 	/**
@@ -201,7 +209,7 @@ public class WumpusPlayer {
 	 * @param perceptions {@link Perceptions}
 	 * @param cell {@link Cell}
 	 */
-	private void addPerceptionFromCurrentCell(List<Perceptions> perceptions, Cell cell) {
+	private void addPerceptionsFromCurrentCell(List<Perceptions> perceptions, Cell cell) {
 		
 			
 		if(cell.getContent().isPresent() && WumpusElements.GOLD.equals((WumpusElements) cell.getContent().get())) {
@@ -241,42 +249,7 @@ public class WumpusPlayer {
 		
 	}
 	
-	/**
-	 * Makes a shoot if player has arrows and determine if it has killed wumpus or not.
-	 */
-	public void doShoot() {
-		
-		Cell currentCell = getGameBoard().getCellByPosition(getPositionX(), getPositionY());
-		Cell wumpusCell = getGameBoard().getCellByContent(WumpusElements.WUMPUS);
-		boolean wumpusIsDead = false;
-		
-		if(getArrows()>0) {
-			
-			setArrows(getArrows()-1);
-			setArrowShooted(true);
-			switch (getCurrentCourse()) {
-					
-				case NORTH :
-					wumpusIsDead = wumpusCell.getPositionY() == currentCell.getPositionY() && wumpusCell.getPositionX() < currentCell.getPositionX();
-					break;
-				case SOUTH :
-					wumpusIsDead = wumpusCell.getPositionY() == currentCell.getPositionY() && wumpusCell.getPositionX() > currentCell.getPositionX();
-					break;
-				case EAST : 
-					wumpusIsDead = wumpusCell.getPositionX() == currentCell.getPositionX() && wumpusCell.getPositionY() > currentCell.getPositionY();
-					break;
-				case WEST :
-					wumpusIsDead = wumpusCell.getPositionX() == currentCell.getPositionX() && wumpusCell.getPositionY() < currentCell.getPositionY();
-					break;
-			}
-			
-			if(wumpusIsDead) {
-				setDeadWumpus(true);
-				wumpusCell.setContent(Optional.empty());
-			}
-		}
-		
-	}
+	
 	
 	/**
 	 * Does an action from {@link Actions}
@@ -315,6 +288,34 @@ public class WumpusPlayer {
 		
 	}
 
+	private void doGoForward(Cell currentCell) {
+		switch (getCurrentCourse()) {
+			case NORTH:
+				if(currentCell.getPositionX()!= 0) {
+					moveTo(currentCell.getPositionX()-1, currentCell.getPositionY());
+				}
+				break;
+				
+			case SOUTH:
+				if(currentCell.getPositionX()!= getGameBoard().getDimensionX()-1 ) {
+					moveTo(currentCell.getPositionX()+1, currentCell.getPositionY());
+				}
+				break;
+				
+			case WEST:
+				if(currentCell.getPositionY()!= 0) {
+					moveTo(currentCell.getPositionX(), currentCell.getPositionY()-1);
+				}
+				break;
+				
+			case EAST:
+				if(currentCell.getPositionY()!= getGameBoard().getDimensionY()-1) {
+					moveTo(currentCell.getPositionX(), currentCell.getPositionY()+1);
+				}
+				break;
+		}
+	}
+	
 	private void doTurnRight() {
 		switch (getCurrentCourse()) {
 			case NORTH:
@@ -355,32 +356,42 @@ public class WumpusPlayer {
 		}
 	}
 
-	private void doGoForward(Cell currentCell) {
-		switch (getCurrentCourse()) {
-			case NORTH:
-				if(currentCell.getPositionX()!= 0) {
-					moveTo(currentCell.getPositionX()-1, currentCell.getPositionY());
-				}
-				break;
-				
-			case SOUTH:
-				if(currentCell.getPositionX()!= getGameBoard().getDimensionX()-1 ) {
-					moveTo(currentCell.getPositionX()+1, currentCell.getPositionY());
-				}
-				break;
-				
-			case WEST:
-				if(currentCell.getPositionY()!= 0) {
-					moveTo(currentCell.getPositionX(), currentCell.getPositionY()-1);
-				}
-				break;
-				
-			case EAST:
-				if(currentCell.getPositionY()!= getGameBoard().getDimensionY()-1) {
-					moveTo(currentCell.getPositionX(), currentCell.getPositionY()+1);
-				}
-				break;
+
+	/**
+	 * Makes a shoot if player has arrows and determine if it has killed wumpus or not.
+	 */
+	public void doShoot() {
+		
+		Cell currentCell = getGameBoard().getCellByPosition(getPositionX(), getPositionY());
+		Cell wumpusCell = getGameBoard().getCellByContent(WumpusElements.WUMPUS);
+		boolean wumpusIsDead = false;
+		
+		if(getArrows()>0) {
+			
+			setArrows(getArrows()-1);
+			setArrowShooted(true);
+			switch (getCurrentCourse()) {
+					
+				case NORTH :
+					wumpusIsDead = wumpusCell.getPositionY() == currentCell.getPositionY() && wumpusCell.getPositionX() < currentCell.getPositionX();
+					break;
+				case SOUTH :
+					wumpusIsDead = wumpusCell.getPositionY() == currentCell.getPositionY() && wumpusCell.getPositionX() > currentCell.getPositionX();
+					break;
+				case EAST : 
+					wumpusIsDead = wumpusCell.getPositionX() == currentCell.getPositionX() && wumpusCell.getPositionY() > currentCell.getPositionY();
+					break;
+				case WEST :
+					wumpusIsDead = wumpusCell.getPositionX() == currentCell.getPositionX() && wumpusCell.getPositionY() < currentCell.getPositionY();
+					break;
+			}
+			
+			if(wumpusIsDead) {
+				setDeadWumpus(true);
+				wumpusCell.setContent(Optional.empty());
+			}
 		}
+		
 	}
 	
 	/**
@@ -396,8 +407,11 @@ public class WumpusPlayer {
 			
 			switch ( (WumpusElements) currentCell.getContent().get()) {
 			
-				case PIT: case WUMPUS:
+				case PIT:
 					result = Results.LOSE;
+					break;
+				case WUMPUS:
+					result = Results.LOSE_WUMPUS;
 					break;
 					
 				case GOLD:
