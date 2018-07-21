@@ -13,7 +13,7 @@ Run Main.java class from eclipse and follow instructions on the console.
 
 Prerequisites
 ======
-JDK Java 8
+JDK Java 8  
 Junit 4.12.0
 
 
