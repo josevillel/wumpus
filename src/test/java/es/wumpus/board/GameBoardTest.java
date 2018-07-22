@@ -19,13 +19,16 @@ public class GameBoardTest {
 	@Test(expected = GameBoardException.class)
 	public void gameBoardThrowExceptionWhenHasWrongDimensions() throws GameBoardException {
 		
-		new GameBoard(0, 2);
+		GameBoard gameBoard = new GameBoard(0, 2);
+		gameBoard.create();
+		
 	}
 	
 	@Test(expected = GameBoardException.class)
 	public void gameBoardThrowExceptionWhenSearchRandomCellExceedLimit() throws GameBoardException {
 		
 		GameBoard gameBoard = new GameBoard(3, 3);
+		gameBoard.create();
 		
 		for (int x = 0; x < gameBoard.getDimensionX(); x++) {
 			  for (int y = 0; y <  gameBoard.getDimensionY(); y++) {
@@ -43,6 +46,7 @@ public class GameBoardTest {
 		
 		
 		GameBoard gameBoard = new GameBoard(5,6);
+		gameBoard.create();
 		
 		int totalCells = 5 * 6 ;
 		
@@ -53,6 +57,7 @@ public class GameBoardTest {
 	public void gameBoardHasCells() throws GameBoardException {
 		
 		GameBoard gameBoard = new GameBoard();
+		gameBoard.create();
 		
 		for (int x = 0; x < gameBoard.getDimensionX(); x++) {
 			  for (int y = 0; y <  gameBoard.getDimensionY(); y++) {
@@ -65,6 +70,7 @@ public class GameBoardTest {
 	public void gameBoardReturnConnectedCellsFromOneCell() throws GameBoardException {
 		
 		GameBoard gameBoard = new GameBoard(3,3);
+		gameBoard.create();
 		
 		int j,k;
 		

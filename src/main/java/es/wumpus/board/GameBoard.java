@@ -10,7 +10,7 @@ import java.util.Random;
  * 
  * Represents a game board in the form of a set of cells. Its cells are accessed through its x, y coordinates. 
  * Through the constructors it is possible to create the board with the default size, 
- * or configure its size and position from where it starts, as needed
+ * or configure its size and position from where it starts, as needed.
  * 
  * @author Jose Villel
  *
@@ -20,6 +20,9 @@ public class GameBoard {
 	
 	private static final int DEFAULT_DIMENSION_X = 4; 
 	private static final int DEFAULT_DIMENSION_Y = 4; 
+	
+	private static final int DEFAULT_MAX_DIMENSION=50;
+	private static final int DEFAULT_MIN_DIMENSION=3;
 	
 	private static final int RANDOM_CELL_SEARCH_MAX_ATTEMPS = 200;
 
@@ -32,27 +35,22 @@ public class GameBoard {
 	private int totalElements;
 
 
-	public GameBoard() throws GameBoardException  {
+	public GameBoard()   {
 		
 		this(DEFAULT_DIMENSION_X, DEFAULT_DIMENSION_Y);
 		
 	}
-	public GameBoard(int dimensionX, int dimensionY) throws GameBoardException {
+	public GameBoard(int dimensionX, int dimensionY)  {
 
 		this(dimensionX, dimensionY, dimensionX-1, 0);		
 	}
 	
-	public GameBoard(int dimensionX, int dimensionY, int initialPositionX, int initialPositionY) throws GameBoardException {
+	public GameBoard(int dimensionX, int dimensionY, int initialPositionX, int initialPositionY)  {
 		
 		setDimensionX(dimensionX);
 		setDimensionY(dimensionY);
 		setInitialPositionX(initialPositionX);
 		setInitialPositionY(initialPositionY);
-		setTotalCells(0);
-		setTotalElements(0);
-		
-		this.create();
-		this.clear();
 		
 	}
 
@@ -105,11 +103,24 @@ public class GameBoard {
 	 */
 	public void create() throws GameBoardException {
 		
-		if(getDimensionX() < 3 || getDimensionY() < 3) {
+		if(getDimensionX() < DEFAULT_MIN_DIMENSION || getDimensionX() > DEFAULT_MAX_DIMENSION || getDimensionY() < DEFAULT_MIN_DIMENSION || getDimensionY() > DEFAULT_MAX_DIMENSION) {
 			throw new GameBoardException(GameBoardException.DIMENSION_WRONG_MSG);
 		}
 		
 		this.setBoard(new Cell[getDimensionX()][getDimensionY()]);
+		
+		int cont =0;
+		
+		for (int x = 0; x < getDimensionX(); x++) {
+			  for (int y = 0; y <  getDimensionY(); y++) {
+				  boolean isInTheOutline = (x==0 || x== dimensionX-1 || y==0 || y == dimensionY-1);
+				  setCell(new Cell(x,y, isInTheOutline));
+				  cont++; 
+			  }
+		}
+		
+		setTotalCells(cont);
+		setTotalElements(0);
 	
 	}
 
@@ -240,22 +251,6 @@ public class GameBoard {
 		}
 		
 		return connectedCells;
-		
-	}
-	
-	public void clear() {
-		
-		int cont =0;
-		
-		for (int x = 0; x < getDimensionX(); x++) {
-			  for (int y = 0; y <  getDimensionY(); y++) {
-				  boolean isInTheOutline = (x==0 || x== dimensionX-1 || y==0 || y == dimensionY-1);
-				  setCell(new Cell(x,y, isInTheOutline));
-				  cont++; 
-			  }
-		}
-		
-		setTotalCells(cont);
 		
 	}
 

@@ -37,16 +37,15 @@ public class WumpusPlayer {
 	private boolean arrowShooted;
 	
 	
-	public WumpusPlayer() throws GameBoardException {
+	public WumpusPlayer() {
 
 		this(new GameBoard(), new WumpusRules());	
 	}
 
-	public WumpusPlayer(GameBoard gameBoard, WumpusRules rules) throws GameBoardException {
+	public WumpusPlayer(GameBoard gameBoard, WumpusRules rules)  {
 		
 		setGameBoard(gameBoard);
 		setRules(rules);
-		init();
 	}
 
 	public int getPositionX() {
@@ -128,6 +127,7 @@ public class WumpusPlayer {
 		setGoldCarrier(false);
 		setDeadWumpus(false);
 		setArrowShooted(false);
+		getGameBoard().create();
 		putElementsOnBoard();
 	}
 	
@@ -137,16 +137,11 @@ public class WumpusPlayer {
 	 */
 	public void putElementsOnBoard() throws GameBoardException {
 		
-		getGameBoard().clear();
-		
 		getGameBoard().putElementOnRandomCell(WumpusElements.WUMPUS);
 		getGameBoard().putElementOnRandomCell(WumpusElements.GOLD);
 		for (int i = 1; i <= rules.getNumberOfPits(); i++) {
 			getGameBoard().putElementOnRandomCell(WumpusElements.PIT);
 		}
-
-
-
 	}
 
 	/**

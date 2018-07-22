@@ -29,6 +29,7 @@ public class WumpusPlayerTest {
 		rules = new WumpusRules();
 		board = new GameBoard(4,4);
 		player = new WumpusPlayer(board , rules);
+		player.init();
 		
 	}
 	
