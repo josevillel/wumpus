@@ -374,25 +374,29 @@ public class WumpusPlayer {
 			
 			setArrows(getArrows()-1);
 			setArrowShooted(true);
-			switch (getCurrentCourse()) {
-					
-				case NORTH :
-					wumpusIsDead = wumpusCell.getPositionY() == currentCell.getPositionY() && wumpusCell.getPositionX() < currentCell.getPositionX();
-					break;
-				case SOUTH :
-					wumpusIsDead = wumpusCell.getPositionY() == currentCell.getPositionY() && wumpusCell.getPositionX() > currentCell.getPositionX();
-					break;
-				case EAST : 
-					wumpusIsDead = wumpusCell.getPositionX() == currentCell.getPositionX() && wumpusCell.getPositionY() > currentCell.getPositionY();
-					break;
-				case WEST :
-					wumpusIsDead = wumpusCell.getPositionX() == currentCell.getPositionX() && wumpusCell.getPositionY() < currentCell.getPositionY();
-					break;
-			}
 			
-			if(wumpusIsDead) {
-				setDeadWumpus(true);
-				wumpusCell.setContent(Optional.empty());
+			if(wumpusCell != null) {
+
+				switch (getCurrentCourse()) {
+						
+					case NORTH :
+						wumpusIsDead = wumpusCell.getPositionY() == currentCell.getPositionY() && wumpusCell.getPositionX() < currentCell.getPositionX();
+						break;
+					case SOUTH :
+						wumpusIsDead = wumpusCell.getPositionY() == currentCell.getPositionY() && wumpusCell.getPositionX() > currentCell.getPositionX();
+						break;
+					case EAST : 
+						wumpusIsDead = wumpusCell.getPositionX() == currentCell.getPositionX() && wumpusCell.getPositionY() > currentCell.getPositionY();
+						break;
+					case WEST :
+						wumpusIsDead = wumpusCell.getPositionX() == currentCell.getPositionX() && wumpusCell.getPositionY() < currentCell.getPositionY();
+						break;
+				}
+				
+				if(wumpusIsDead) {
+					setDeadWumpus(true);
+					wumpusCell.setContent(Optional.empty());
+				}
 			}
 		}
 		
