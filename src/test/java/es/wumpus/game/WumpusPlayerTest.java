@@ -21,19 +21,19 @@ public class WumpusPlayerTest {
 	
 	private WumpusRules rules;
 	private GameBoard board;
+	private WumpusPlayer player;
 
 	
 	@Before
 	public void onceExecutedBeforeAll() throws GameBoardException {
 		rules = new WumpusRules();
 		board = new GameBoard(4,4);
+		player = new WumpusPlayer(board , rules);
 		
 	}
 	
 	@Test
 	public void gameHasPlayerReady()  {
-		
-		WumpusPlayer player = new WumpusPlayer(board , rules);
 		
 		assertTrue("Player does not have arrows", player.getArrows() > 0);
 		assertTrue("Player is not located at the exit", board.getInitialPositionX() == player.getPositionX() && board.getInitialPositionY() == player.getPositionY());
@@ -43,15 +43,14 @@ public class WumpusPlayerTest {
 	@Test
 	public void gameHasRules()  {
 		
-		WumpusPlayer player = new WumpusPlayer(board , rules);
 		WumpusRules rules = player.getRules();
 		
 		assertNotNull(rules);
 	}
 	
 	@Test
-	public void gameHasWumpus() {
-		WumpusPlayer player = new WumpusPlayer(board , rules);
+	public void gameHasWumpus() throws GameBoardException {
+
 		player.putElementsOnBoard();
 		Cell cell = board.getCellByContent(WumpusElements.WUMPUS);
 		
@@ -59,8 +58,8 @@ public class WumpusPlayerTest {
 	}
 	
 	@Test
-	public void gameHasGold() {
-		WumpusPlayer player = new WumpusPlayer(board , rules);
+	public void gameHasGold() throws GameBoardException {
+
 		player.putElementsOnBoard();
 		Cell cell = board.getCellByContent(WumpusElements.GOLD);
 		
@@ -70,7 +69,7 @@ public class WumpusPlayerTest {
 	
 	@Test
 	public void playerIsNearAPitAndPerceiveABreeze() {
-		WumpusPlayer player = new WumpusPlayer(board , rules);
+
 		board.putElementOnCell(WumpusElements.PIT, 0,1);
 		player.moveTo(0,0);
 		List<Perceptions> perceptions = player.whatAboutPerceptions();
@@ -81,7 +80,7 @@ public class WumpusPlayerTest {
 	
 	@Test
 	public void playerIsNearTheWumpusAndPerceiveAStench() {
-		WumpusPlayer player = new WumpusPlayer(board , rules);
+
 		board.putElementOnCell(WumpusElements.WUMPUS, 0,1);
 		player.moveTo(0,0);
 		List<Perceptions> perceptions = player.whatAboutPerceptions();
@@ -93,7 +92,7 @@ public class WumpusPlayerTest {
 	
 	@Test
 	public void playerFoundGoldAndPerceiveABrightness(){
-		WumpusPlayer player = new WumpusPlayer(board , rules);
+
 		board.putElementOnCell(WumpusElements.GOLD, 0,0);
 		player.moveTo(0,0);
 		List<Perceptions> perceptions = player.whatAboutPerceptions();
@@ -104,7 +103,7 @@ public class WumpusPlayerTest {
 	
 	@Test
 	public void playerKillWumpusAndHearAScream() {
-		WumpusPlayer player = new WumpusPlayer(board , rules);
+
 		board.putElementOnCell(WumpusElements.WUMPUS, 0,3 );
 		player.moveTo(0,0);
 		player.setCurrentCourse(Courses.EAST);
@@ -117,7 +116,7 @@ public class WumpusPlayerTest {
 	
 	@Test
 	public void playerGoForwardToAWallAndPerceiveAShock() {
-		WumpusPlayer player = new WumpusPlayer(board , rules);
+
 		player.moveTo(1,0);
 		player.setCurrentCourse(Courses.NORTH);
 		player.doAction(Actions.GO_FORWARD);
@@ -129,7 +128,7 @@ public class WumpusPlayerTest {
 	
 	@Test
 	public void playerFoundTheWumpusAndPlayerLoses() {
-		WumpusPlayer player = new WumpusPlayer(board , rules);
+
 		board.putElementOnCell(WumpusElements.WUMPUS, 0,0);
 		player.moveTo(1,0);
 		player.setCurrentCourse(Courses.NORTH);
@@ -141,7 +140,7 @@ public class WumpusPlayerTest {
 	
 	@Test
 	public void playerFoundAPitAndPlayerLoses() {
-		WumpusPlayer player = new WumpusPlayer(board , rules);
+
 		board.putElementOnCell(WumpusElements.PIT, 0,0);
 		player.moveTo(1,0);
 		player.setCurrentCourse(Courses.NORTH);
@@ -155,7 +154,7 @@ public class WumpusPlayerTest {
 
 	@Test
 	public void playerReturnsWithGoldAndWin () {
-		WumpusPlayer player = new WumpusPlayer(board , rules);
+
 		
 		board.setInitialPositionX(0);
 		board.setInitialPositionY(0);

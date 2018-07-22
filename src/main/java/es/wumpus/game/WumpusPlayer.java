@@ -42,7 +42,7 @@ public class WumpusPlayer {
 		this(new GameBoard(), new WumpusRules());	
 	}
 
-	public WumpusPlayer(GameBoard gameBoard, WumpusRules rules) {
+	public WumpusPlayer(GameBoard gameBoard, WumpusRules rules) throws GameBoardException {
 		
 		setGameBoard(gameBoard);
 		setRules(rules);
@@ -119,7 +119,7 @@ public class WumpusPlayer {
 	 * Initialize the player
 	 * @throws GameBoardException 
 	 */
-	public void init() {
+	public void init() throws GameBoardException {
 		
 		setPositionX(getGameBoard().getInitialPositionX());
 		setPositionY(getGameBoard().getInitialPositionY());
@@ -135,20 +135,16 @@ public class WumpusPlayer {
 	 * Put game elements on the board.
 	 * @throws GameBoardException 
 	 */
-	public void putElementsOnBoard() {
+	public void putElementsOnBoard() throws GameBoardException {
 		
 		getGameBoard().clear();
 		
-		try {
-			getGameBoard().putElementOnRandomCell(WumpusElements.WUMPUS);
-			getGameBoard().putElementOnRandomCell(WumpusElements.GOLD);
-			for (int i = 1; i <= rules.getNumberOfPits(); i++) {
-				getGameBoard().putElementOnRandomCell(WumpusElements.PIT);
-			}
-		} catch (GameBoardException e) {
-			// TODO Handle exceptions
-			e.printStackTrace();
+		getGameBoard().putElementOnRandomCell(WumpusElements.WUMPUS);
+		getGameBoard().putElementOnRandomCell(WumpusElements.GOLD);
+		for (int i = 1; i <= rules.getNumberOfPits(); i++) {
+			getGameBoard().putElementOnRandomCell(WumpusElements.PIT);
 		}
+
 
 
 	}

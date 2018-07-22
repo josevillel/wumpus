@@ -29,6 +29,7 @@ public class GameBoard {
 	private int initialPositionY;
 	private Cell[][] board;
 	private int totalCells;
+	private int totalElements;
 
 
 	public GameBoard() throws GameBoardException  {
@@ -47,6 +48,8 @@ public class GameBoard {
 		setDimensionY(dimensionY);
 		setInitialPositionX(initialPositionX);
 		setInitialPositionY(initialPositionY);
+		setTotalCells(0);
+		setTotalElements(0);
 		
 		this.create();
 		this.clear();
@@ -90,6 +93,12 @@ public class GameBoard {
 		this.totalCells = totalCells;
 	}
 	
+	public int getTotalElements() {
+		return totalElements;
+	}
+	public void setTotalElements(int totalElements) {
+		this.totalElements = totalElements;
+	}
 	/**
 	 * Create a board as a matrix, and insert a {@link Cell}  in each element.
 	 * @throws GameBoardException 
@@ -117,6 +126,9 @@ public class GameBoard {
 		int cont = 0;
 		Cell cell;
 		
+		if(getTotalElements() == getTotalCells()-1) {
+			throw new GameBoardException(GameBoardException.ELEMENTS_EXCEED_CELLS_MSG);
+		}
 			
 		do {
 			x = r.nextInt(this.getDimensionX());
@@ -143,6 +155,7 @@ public class GameBoard {
 	public void putElementOnCell(BoardElement element, int x, int y) {
 		
 		this.getCellByPosition(x,y).setContent(Optional.of(element));
+		setTotalElements(getTotalElements()+1);
 		
 	}
 

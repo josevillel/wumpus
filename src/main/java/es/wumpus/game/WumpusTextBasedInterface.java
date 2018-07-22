@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import es.wumpus.board.Cell;
+import es.wumpus.board.GameBoardException;
 import es.wumpus.game.WumpusRules.Actions;
 import es.wumpus.game.WumpusRules.Perceptions;
 import es.wumpus.game.WumpusRules.Results;
@@ -22,7 +23,7 @@ public class WumpusTextBasedInterface {
 	 * @param wumpusPlayer {@link WumpusPlayer}
 	 * @throws Exception 
 	 */
-	public static void startGame(WumpusPlayer wumpusPlayer) throws Exception {
+	public static void startGame(WumpusPlayer wumpusPlayer) throws GameBoardException {
 
 		printWelcome();
 		
