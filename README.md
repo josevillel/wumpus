@@ -8,9 +8,9 @@ Implementation of the game HUNT THE WUMPUS using simple text interactions to dri
 Getting Started
 ======
 
-Run Main.java class from eclipse and follow instructions on the console. 
-You will be able to configure the game choosing the option 2.
-Enjoy ;)!
+Run Main.java class from eclipse and follow instructions on the console.   
+You will be able to configure the game choosing the option 2.     
+Enjoy ;)!  
 
 
 Prerequisites
