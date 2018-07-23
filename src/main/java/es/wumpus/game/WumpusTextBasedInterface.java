@@ -44,9 +44,11 @@ public class WumpusTextBasedInterface {
 		
 		do {
 			try {
+				
 				printWelcome();
 				printWelcomeSettings();
 				goOn = handleConfigOptions(reader, wumpusPlayer);
+				
 			} catch (GameBoardException gbex) {
 				System.err.println(gbex.getMessage());
 				goOn = false;
@@ -61,6 +63,9 @@ public class WumpusTextBasedInterface {
 				goOn = false;
 			}
 		} while (!goOn);
+		
+		reader.close();		
+		System.out.println("Thanks for playing. See you soon");
 
 
 	}
@@ -103,38 +108,14 @@ public class WumpusTextBasedInterface {
 	private static boolean handleGameOptions(Scanner reader, WumpusPlayer wumpusPlayer) throws GameBoardException {
 		
 		Results result;
-		String option;
 		int optionNumber = 0;
 		
 		do {
 			
 			do {
-							
 				printLines(50);
 				printHeader();
-				result = wumpusPlayer.checkTheGoal();
-				
-				if(Results.GO_ON.equals(result)) {
-					
-					showBoard(wumpusPlayer);
-					showPerceptions(wumpusPlayer.whatAboutPerceptions());
-					showOptions(wumpusPlayer);
-					
-					do {
-						option= reader.next();
-						try {
-							optionNumber = Integer.parseInt(option);
-						} catch(NumberFormatException e) {
-							optionNumber = 0;
-						}
-						if(optionNumber <= 0 || optionNumber > Actions.values().length) {
-							System.out.println(WRONG_OPTION_TEXT);
-							showOptions(wumpusPlayer);
-						}
-					} while (optionNumber <= 0 || optionNumber > Actions.values().length);
-					
-					wumpusPlayer.doAction(Actions.values()[optionNumber-1]);
-				}
+				result = playGame(reader, wumpusPlayer);
 				
 			} while (Results.GO_ON.equals(result));
 			
@@ -142,56 +123,50 @@ public class WumpusTextBasedInterface {
 			
 			wumpusPlayer.init();
 
-			showOptionsEnd();
-			
-			do {
-				option = reader.next();
-				try {
-					optionNumber = Integer.parseInt(option);
-				} catch(NumberFormatException e) {
-					optionNumber = 0;
-				}
-				
-				if(optionNumber <= 0 || optionNumber > 2) {
-					System.out.println(WRONG_OPTION_TEXT);
-					showOptionsEnd();
-				}
-
-			} while (optionNumber <= 0 || optionNumber > 2);			
+			optionNumber = handleOptionsEnd(reader);	
 			
 		} while (optionNumber == 1);
-		
-		reader.close();
-		
-		System.out.println("Thanks for playing. See you soon");
 		
 		return true;
 		
 	}
 
-	private static void printHeader() {
+	private static Results playGame(Scanner reader, WumpusPlayer player) {
+
+		String option;
+		int optionNumber = 0;
+		Results result = player.checkTheGoal();
 		
-		System.out.println(SEPARATOR_STAR);
-		System.out.println("*   _   _ _   _ _   _ _____   _____ _   _ _____  __        ___   _ __  __ ____  _   _ ____    *");
-		System.out.println("*  | | | | | | | \\ | |_   _| |_   _| | | | ____| \\ \\      / | | | |  \\/  |  _ \\| | | / ___|   *");
-		System.out.println("*  | |_| | | | |  \\| | | |     | | | |_| |  _|    \\ \\ /\\ / /| | | | |\\/| | |_) | | | \\___ \\   *"); 
-		System.out.println("*  |  _  | |_| | |\\  | | |     | | |  _  | |___    \\ V  V / | |_| | |  | |  __/| |_| |___) |  *");
-		System.out.println("*  |_| |_|\\___/|_| \\_| |_|     |_| |_| |_|_____|    \\_/\\_/   \\___/|_|  |_|_|    \\___/|____/   *");
-		System.out.println("*                                                                                             *");
-		System.out.println("*                                                                                     v.1.0   *");
-		System.out.println("*                                                                            by Jose Villel   *");
-		System.out.println(SEPARATOR_STAR);
+		if(Results.GO_ON.equals(result)) {
+			
+			showBoard(player);
+			showPerceptions(player.whatAboutPerceptions());
+			
+			do {
+				
+				System.out.println(CHOOSE_OPTION_TEXT);
+				System.out.println("1.- Go forward");
+				System.out.println("2.- Turn right");
+				System.out.println("3.- Turn left");
+				System.out.println("4.- Shoot (" + player.getArrows() +")");
+				printLines(1);
+				option= reader.next();
+				try {
+					optionNumber = Integer.parseInt(option);
+				} catch(NumberFormatException e) {
+					optionNumber = 0;
+				}
+				if(optionNumber <= 0 || optionNumber > Actions.values().length) {
+					System.out.println(WRONG_OPTION_TEXT);
+				}
+			} while (optionNumber <= 0 || optionNumber > Actions.values().length);
+			
+			player.doAction(Actions.values()[optionNumber-1]);
+		}
+		
+		return result;
 	}
-	
-	private static void printWelcome() {
-		printHeader();
-	}
-	
-	private static void printWelcomeSettings() {
-		System.out.println(SEPARATOR_STAR);
-		System.out.println("*                                 ----- GAME SETTINGS ------                                  *");
-		System.out.println(SEPARATOR_STAR);
-	}
+
 
 	
 	private static void handleCustomConfigOptions(Scanner reader,  WumpusPlayer player) {
@@ -216,6 +191,11 @@ public class WumpusTextBasedInterface {
 			if(input != null) {
 				result = input.charAt(0);
 			}
+			
+			if(result != 'S'  && result != 'N' ) {
+				System.out.println(WRONG_VALUE_TEXT);
+			}
+
 		} while (result != 'S'  && result != 'N');
 		
 		if(result=='S') {
@@ -335,46 +315,79 @@ public class WumpusTextBasedInterface {
 			System.out.print("|");
 		  for (int y = 0; y <  wumpusPlayer.getGameBoard().getDimensionY(); y++) {
 			  Cell cell = wumpusPlayer.getGameBoard().getCellByPosition(x, y);
+			  char elementForPrint = ' ';
+			  char cursorForPrint = ' ';
+			  
 			  if(wumpusPlayer.getPositionX() == x && wumpusPlayer.getPositionY() == y) {
-				  System.out.print(wumpusPlayer.getCurrentCourse().getRepresentativeChar());
-			  }else {
-				  System.out.print(" ");
+				  cursorForPrint = wumpusPlayer.getCurrentCourse().getRepresentativeChar();
 			  }
+
 			  if(cell.getContent().isPresent()) {
 				  WumpusElements element = (WumpusElements) cell.getContent().get();
 				  if(isBegginerMode()) {
-					  System.out.print(element.getRepresentativeChar());
-				  } else {
-					  System.out.print(" ");
+					  elementForPrint = element.getRepresentativeChar();
 				  }
-			  } else {
-				  System.out.print(" ");
 			  }
 
+			  System.out.print(""+cursorForPrint + elementForPrint);
 			  System.out.print("|");
 		  }
 		}
 		printLines(2);
 	}
-
-	private static  void showOptions(WumpusPlayer wumpusPlayer) {
+	
+	private static int handleOptionsEnd(Scanner reader) {
 		
-		System.out.println(CHOOSE_OPTION_TEXT);
-		System.out.println("1.- Go forward");
-		System.out.println("2.- Turn right");
-		System.out.println("3.- Turn left");
-		System.out.println("4.- Shoot (" + wumpusPlayer.getArrows() +")");
-		printLines(1);
+		String option;
+		int optionNumber = 0;
+
+		do {
+			
+			System.out.println(CHOOSE_OPTION_TEXT);
+			System.out.println("1.- Play again");
+			System.out.println("2.- Exit");
+
+			printLines(1);
+			option = reader.next();
+			
+			try {
+				optionNumber = Integer.parseInt(option);
+			} catch(NumberFormatException e) {
+				optionNumber = 0;
+			}
+			
+			if(optionNumber <= 0 || optionNumber > 2) {
+				System.out.println(WRONG_OPTION_TEXT);
+			}
+
+		} while (optionNumber <= 0 || optionNumber > 2);
+		
+		return optionNumber;
 		
 	}
 	
-	private static void showOptionsEnd() {
+	private static void printHeader() {
 		
-		System.out.println(CHOOSE_OPTION_TEXT);
-		System.out.println("1.- Play again");
-		System.out.println("2.- Exit");
-		printLines(1);
-		
+		System.out.println(SEPARATOR_STAR);
+		System.out.println("*   _   _ _   _ _   _ _____   _____ _   _ _____  __        ___   _ __  __ ____  _   _ ____    *");
+		System.out.println("*  | | | | | | | \\ | |_   _| |_   _| | | | ____| \\ \\      / | | | |  \\/  |  _ \\| | | / ___|   *");
+		System.out.println("*  | |_| | | | |  \\| | | |     | | | |_| |  _|    \\ \\ /\\ / /| | | | |\\/| | |_) | | | \\___ \\   *"); 
+		System.out.println("*  |  _  | |_| | |\\  | | |     | | |  _  | |___    \\ V  V / | |_| | |  | |  __/| |_| |___) |  *");
+		System.out.println("*  |_| |_|\\___/|_| \\_| |_|     |_| |_| |_|_____|    \\_/\\_/   \\___/|_|  |_|_|    \\___/|____/   *");
+		System.out.println("*                                                                                             *");
+		System.out.println("*                                                                                     v.1.0   *");
+		System.out.println("*                                                                            by Jose Villel   *");
+		System.out.println(SEPARATOR_STAR);
+	}
+	
+	private static void printWelcome() {
+		printHeader();
+	}
+	
+	private static void printWelcomeSettings() {
+		System.out.println(SEPARATOR_STAR);
+		System.out.println("*                                 ----- GAME SETTINGS ------                                  *");
+		System.out.println(SEPARATOR_STAR);
 	}
 	
 	private static void printLines(int times) {

@@ -15,13 +15,11 @@ public class Cell {
 	private int positionX;
 	private int positionY;
 	private Optional<BoardElement> content;
-	private boolean inTheOutline;
 	
-	public Cell(int positionX, int positionY, boolean isInTheOutline) {
+	public Cell(int positionX, int positionY) {
 		
 		setPositionX(positionX);
 		setPositionY(positionY);
-		setInTheOutline(isInTheOutline);
 		setContent(Optional.empty());
 		
 	}
@@ -60,16 +58,5 @@ public class Cell {
 		this.content = content;
 	}
 
-
-
-	public boolean isInTheOutline() {
-		return inTheOutline;
-	}
-
-
-
-	public void setInTheOutline(boolean inTheOutline) {
-		this.inTheOutline = inTheOutline;
-	}
 
 }

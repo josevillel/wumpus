@@ -46,18 +46,18 @@ public class WumpusRules {
 	
 	public enum Courses {
 		
-		NORTH("^"), 
-		EAST(">"), 
-		SOUTH("v"), 
-		WEST("<");
+		NORTH('^'), 
+		EAST('>'), 
+		SOUTH('v'), 
+		WEST('<');
 		
-		private String representativeChar; 
+		private char representativeChar; 
 		
-		private Courses(String representativeChar) {
+		private Courses(char representativeChar) {
 
 			this.representativeChar=representativeChar;
 		}
-		public String getRepresentativeChar() { return this.representativeChar; }
+		public char getRepresentativeChar() { return this.representativeChar; }
 	}
 	
 	public enum Results {

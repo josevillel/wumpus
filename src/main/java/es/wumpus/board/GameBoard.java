@@ -113,8 +113,7 @@ public class GameBoard {
 		
 		for (int x = 0; x < getDimensionX(); x++) {
 			  for (int y = 0; y <  getDimensionY(); y++) {
-				  boolean isInTheOutline = (x==0 || x== dimensionX-1 || y==0 || y == dimensionY-1);
-				  setCell(new Cell(x,y, isInTheOutline));
+				  setCell(new Cell(x,y));
 				  cont++; 
 			  }
 		}

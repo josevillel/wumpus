@@ -217,24 +217,20 @@ public class WumpusPlayer {
 			cell.setContent(Optional.empty());
 		}
 		
+		switch (getCurrentCourse()) {
 		
-		if(cell.isInTheOutline()) {
-			
-			switch (getCurrentCourse()) {
-			
-				case NORTH:
-					if(cell.getPositionX()==0) perceptions.add(Perceptions.SHOCK);
-					break;
-				case SOUTH:
-					if(cell.getPositionX() == gameBoard.getDimensionX()-1) perceptions.add(Perceptions.SHOCK);
-					break;
-				case WEST:
-					if(cell.getPositionY() == 0) perceptions.add(Perceptions.SHOCK);
-					break;
-				case EAST:
-					if(cell.getPositionY() == gameBoard.getDimensionY()-1) perceptions.add(Perceptions.SHOCK);
-					break;
-			}
+			case NORTH:
+				if(cell.getPositionX()==0) perceptions.add(Perceptions.SHOCK);
+				break;
+			case SOUTH:
+				if(cell.getPositionX() == gameBoard.getDimensionX()-1) perceptions.add(Perceptions.SHOCK);
+				break;
+			case WEST:
+				if(cell.getPositionY() == 0) perceptions.add(Perceptions.SHOCK);
+				break;
+			case EAST:
+				if(cell.getPositionY() == gameBoard.getDimensionY()-1) perceptions.add(Perceptions.SHOCK);
+				break;
 		}
 		
 		if(isDeadWumpus()) {
